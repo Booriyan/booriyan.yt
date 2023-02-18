@@ -1,0 +1,193 @@
+1. UserserviceApplication.java
+
+package com.tns.userservice;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class userserviceApplication
+{
+	public static void main(String[] args)
+	{
+		SpringApplication.run(userserviceApplication.class, args);
+	}
+}
+
+
+2.user.java 
+package com.tns.userservice;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+@Entity
+public class user
+{
+	private Integer user_id;
+	private String user_name;
+	
+	
+	public user() 
+	{
+		super();
+	}
+	
+	public user(Integer user_id, String user_name, string user_Gmail)
+	{
+		super();
+		user_id = user_id;
+		user_name = user_name;
+                user_gmail = user_gmail;
+
+	}
+	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	public Integer getUser_id() {
+		return user_id;
+	}
+	public void setUser_id(Integer user_id) {
+		user_id = user_id;
+	}
+	public String getUser_name() {
+		return user_name;
+	}
+	public void setUser_name(String user_name)
+	{
+		user_name = user_name;
+	}
+        public String getUser_Gmail() {
+		return user_gmail;
+        }
+        public String setUser_name() {
+		 user_Gmail = user Gmail;
+        }  
+	@Override
+	public String toString()
+	{
+		return "user[user id:"+user_id+" user name:"+S_name+"user Gmail:"+user_Gmail+"]";
+	}
+}
+
+
+3.user_Service_Repository.java 
+package com.tns.userservice;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface user_Service_Repository extends JpaRepository<user, Integer> 
+{
+
+}
+
+
+4. user_Service.java
+package com.tns.userservice;
+
+import java.util.List;
+
+import javax.transaction.Transactional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+@Service
+@Transactional
+public class user_Service 
+{
+	@Autowired
+	private user_Service_Repository repo;
+	
+	public List<user> listAll()
+	{
+		return repo.findAll();
+	}
+	
+	public void save(user user)
+	{
+		repo.save(user);
+	}
+	
+	public User get(Integer user_id)
+	{
+		return repo.findById(user_id).get();
+	}
+	public void delete(Integer user_id)
+	{
+		repo.deleteById(user_id);
+	}
+	
+}
+
+
+5. user_service_Controller.java 
+package com.tns.userservice;
+
+import javax.persistence.NoResultException;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class user_service_Controller
+{
+	@Autowired(required=true)
+	private user_Service service;
+	
+	@GetMapping("/userservice")
+	public java.util.List<user> list()
+	{
+		return service.listAll();
+	}
+	
+	@GetMapping("/userservice/{s_id}")
+	public ResponseEntity<user> get(@PathVariable Integer user_id)
+	{
+		try
+		{
+			user user=service.get(user_id);
+			return new ResponseEntity<user>(user,HttpStatus.OK);
+		}
+		catch(NoResultException e)
+		{
+			return new ResponseEntity<user>(HttpStatus.NOT_FOUND);
+		}
+	}
+	@PostMapping("/userservice")
+	public void add(@RequestBody User user)
+	{
+		service.save(user);
+	}
+	
+	@PutMapping("/userservice/{user_id}")
+	public ResponseEntity<?> update(@RequestBody user user, @PathVariable Integer user_id)
+	{
+		user existuser=service.get(user_id);
+		service.save(existuser);
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
+	
+	@DeleteMapping("/userservice/{user_id}")
+	public void delete(@PathVariable Integer user_id)
+	{
+		service.delete(user_id);
+	}
+}
+
+
+
+
+
+
+
+
+
+
